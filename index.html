@@ -92,6 +92,7 @@
       </div>
       <button class="btn btn-primary" onclick="saveAndFetch()">Save &amp; Fetch</button>
       <button class="btn btn-outline" onclick="fetchData()">Refresh Now</button>
+      <button class="btn btn-danger" onclick="clearData()">Clear Data</button>
     </div>
     <div class="status-line" id="fetchStatus">Web App URL abhi tak set nahi hai.</div>
   </div>
@@ -140,6 +141,19 @@ function loadSavedUrl(){
   const u = localStorage.getItem(URL_KEY);
   if(u) document.getElementById('apiUrl').value = u;
   return u;
+}
+
+function clearData(){
+  if(!confirm('Saara loaded data aur saved URL clear kar dein?')) return;
+  allRecords = [];
+  localStorage.removeItem(URL_KEY);
+  document.getElementById('apiUrl').value = '';
+  document.getElementById('whFilter').value = '';
+  document.getElementById('clientFilter').value = '';
+  document.getElementById('fromDate').value = '';
+  document.getElementById('toDate').value = '';
+  setStatus('Data clear kar diya gaya. Web App URL abhi tak set nahi hai.', '');
+  renderAll();
 }
 
 function saveAndFetch(){
