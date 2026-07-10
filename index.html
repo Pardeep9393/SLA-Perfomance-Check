@@ -3,340 +3,327 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SLA Performance Dashboard — Emiza</title>
+<title>Master dashboard</title>
 <style>
-  :root{
-    --navy:#132436; --navy-2:#1b3350; --panel:#ffffff; --bg:#eef2f6; --border:#dbe3ea;
-    --text:#1b2733; --muted:#64748b; --teal:#0d9488; --amber:#d97706; --red:#dc2626;
-    --teal-bg:#e6f6f4; --amber-bg:#fef3e2; --red-bg:#fdeaea;
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    background: #f5f5f2;
+    color: #1a1a1a;
+    margin: 0;
   }
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);}
-  header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;padding:22px 28px;
-    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-  header .title-block{display:flex;flex-direction:column;gap:4px;}
-  header h1{margin:0;font-size:20px;letter-spacing:.3px;}
-  header .sub{font-size:12.5px;color:#b9c6d4;}
-  header .mail{font-size:12px;background:rgba(255,255,255,.08);padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.15);}
-  .wrap{max-width:1360px;margin:0 auto;padding:20px 24px 60px;}
-
-  .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px;}
-  .card h3{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);}
-
-  .source-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
-  .field{display:flex;flex-direction:column;gap:5px;}
-  .field label{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
-  select,input[type=text],input[type=date],input[type=url]{
-    border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13.5px;
-    font-family:inherit;color:var(--text);background:#fff;
+  header {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e2df;
+    padding: 20px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
-  select{min-width:160px;}
-  input[type=url]{min-width:340px;}
-  .btn{border:none;border-radius:6px;padding:9px 16px;font-size:13.5px;font-weight:600;cursor:pointer;transition:.15s;}
-  .btn-primary{background:var(--navy);color:#fff;}
-  .btn-primary:hover{background:var(--navy-2);}
-  .btn-outline{background:#fff;border:1px solid var(--border);color:var(--text);}
-  .btn-outline:hover{border-color:var(--navy);}
-  .btn-danger{background:#fff;border:1px solid var(--red);color:var(--red);}
-  .btn-sm{padding:5px 10px;font-size:12px;}
-  .status-line{font-size:12px;color:var(--muted);margin-top:8px;}
-  .status-line.err{color:var(--red);}
-  .status-line.ok{color:var(--teal);}
+  h1 { font-size: 20px; font-weight: 600; margin: 0 0 4px; }
+  .subtitle { font-size: 13px; color: #666; margin: 0 0 14px; }
+  .top-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .nav { display: flex; gap: 8px; flex-wrap: wrap; }
+  .nav a {
+    font-size: 13px;
+    color: #444;
+    background: #f5f5f2;
+    border: 1px solid #e2e2df;
+    border-radius: 20px;
+    padding: 7px 14px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .nav a:hover { background: #ececea; }
+  .nav a.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  button {
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  button:hover { background: #333; }
+  button.secondary {
+    background: #fff;
+    color: #1a1a1a;
+    border: 1px solid #ccc;
+  }
+  button.secondary:hover { background: #f0f0ee; }
+  main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  .section { margin-bottom: 28px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .section-head h2 { font-size: 16px; font-weight: 600; margin: 0; }
+  .section-actions { display: flex; gap: 8px; align-items: center; }
+  .section-actions a { font-size: 12px; color: #555; text-decoration: none; border: 1px solid #ccc; border-radius: 6px; padding: 5px 10px; }
+  .section-actions a:hover { background: #ececea; }
+  .remove-btn { font-size: 12px; color: #a32d2d; background: none; border: 1px solid #e9c7c7; border-radius: 6px; padding: 5px 10px; }
+  .remove-btn:hover { background: #fcebeb; }
+  .frame-wrap {
+    background: #ffffff;
+    border: 1px solid #e2e2df;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  iframe {
+    width: 100%;
+    height: 700px;
+    border: none;
+    display: block;
+  }
+  .load-msg, .empty-msg { font-size: 13px; color: #999; padding: 24px 12px; text-align: center; }
 
-  .toolbar{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end;}
-
-  .tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-  .tab{padding:9px 16px;border-radius:8px 8px 0 0;background:#dde6ee;color:var(--navy);
-    font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;}
-  .tab.active{background:var(--panel);border:1px solid var(--border);border-bottom-color:var(--panel);color:var(--navy);}
-
-  .section{background:var(--panel);border:1px solid var(--border);border-radius:0 8px 8px 8px;padding:18px;display:none;overflow-x:auto;}
-  .section.active{display:block;}
-  .section-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;}
-  .section-head h2{margin:0;font-size:16px;}
-  .stat-chip{font-size:12px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 12px;color:var(--muted);}
-
-  table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:600px;border:1px solid var(--border);}
-  thead th{text-align:left;background:var(--bg);color:var(--muted);font-size:10.5px;text-transform:uppercase;
-    letter-spacing:.3px;padding:9px 10px;border:1px solid var(--border);white-space:nowrap;}
-  tbody td{padding:8px 10px;border:1px solid var(--border);white-space:nowrap;}
-  tbody tr:hover{background:#f7fafc;}
-  .badge{padding:3px 9px;border-radius:12px;font-size:12px;font-weight:600;display:inline-block;}
-  .badge.good{background:var(--teal-bg);color:var(--teal);}
-  .badge.warn{background:var(--amber-bg);color:var(--amber);}
-  .badge.bad{background:var(--red-bg);color:var(--red);}
-  .badge.plain{background:var(--bg);color:var(--text);}
-  .empty{padding:30px 10px;text-align:center;color:var(--muted);font-size:13px;}
-  .foot-note{font-size:11.5px;color:var(--muted);margin-top:14px;line-height:1.6;}
-  code{background:var(--bg);padding:2px 6px;border-radius:4px;font-size:12px;}
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%;
+    max-width: 380px;
+  }
+  .modal h3 { margin: 0 0 14px; font-size: 16px; }
+  .modal label { font-size: 13px; color: #555; display: block; margin: 10px 0 4px; }
+  .modal input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #d5d5d0;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+  .modal-error { color: #a32d2d; font-size: 12px; margin-top: 8px; display: none; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="title-block">
-    <h1>SLA Performance Dashboard</h1>
-    <div class="sub">Inward · Return · Order Process · Escalation — auto-fetched from mail</div>
+  <div class="top-row">
+    <div>
+      <h1>Master dashboard</h1>
+      <p class="subtitle">All tracker dashboards in one place, shared across every device</p>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="secondary" onclick="loadDashboards()">Refresh</button>
+      <button onclick="openModal()">+ Add dashboard</button>
+    </div>
   </div>
-  <div class="mail">Source: north.mis@emizainc.com</div>
+  <div class="nav" id="nav"></div>
 </header>
 
-<div class="wrap">
+<main id="main">
+  <p class="load-msg" id="mainLoading">Loading dashboard list...</p>
+</main>
 
-  <div class="card">
-    <h3>Data Source (Apps Script Web App)</h3>
-    <div class="source-row">
-      <div class="field" style="flex:1;">
-        <label>Web App URL</label>
-        <input type="url" id="apiUrl" placeholder="https://script.google.com/macros/s/XXXXX/exec">
-      </div>
-      <button class="btn btn-primary" onclick="saveAndFetch()">Save &amp; Fetch</button>
-      <button class="btn btn-outline" onclick="fetchData()">Refresh Now</button>
-    </div>
-    <div class="status-line" id="fetchStatus">Web App URL abhi tak set nahi hai.</div>
-  </div>
-
-  <div class="card">
-    <div class="toolbar">
-      <div class="field">
-        <label>WH Filter</label>
-        <select id="whFilter"><option value="">All Warehouses</option></select>
-      </div>
-      <div class="field">
-        <label>Client Filter</label>
-        <select id="clientFilter"><option value="">All Clients</option></select>
-      </div>
-      <div class="field">
-        <label>From Date</label>
-        <input type="date" id="fromDate">
-      </div>
-      <div class="field">
-        <label>To Date</label>
-        <input type="date" id="toDate">
-      </div>
-      <button class="btn btn-outline" onclick="clearFilters()">Clear Filters</button>
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>Add a dashboard link</h3>
+    <label>Name</label>
+    <input type="text" id="modalName" placeholder="e.g. Return Dashboard">
+    <label>URL</label>
+    <input type="text" id="modalUrl" placeholder="https://yourname.github.io/your-dashboard/">
+    <p class="modal-error" id="modalError"></p>
+    <div class="modal-actions">
+      <button class="secondary" onclick="closeModal()">Cancel</button>
+      <button onclick="submitAdd()">Add</button>
     </div>
   </div>
-
-  <div class="tabs" id="tabBar"></div>
-  <div id="sectionsHolder"></div>
-
-  <div class="foot-note">
-    Auto-refresh har 5 minute me hota hai. % values color-coded hain: ≥95%
-    <span class="badge good" style="padding:1px 8px;">Good</span>, 90–94%
-    <span class="badge warn" style="padding:1px 8px;">Watch</span>, &lt;90%
-    <span class="badge bad" style="padding:1px 8px;">Breach</span> — assumption hai, bata do agar threshold alag chahiye.
-  </div>
-
 </div>
 
 <script>
-const SLA_TYPES = ["Inward SLA","Return SLA","Order Process SLA","Escalation SLA"];
-const URL_KEY = "emiza_sla_api_url";
-const DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbyeuyOfVe4zxo00qZasHvfKTy2hCzsD-q699Lr8KM99bzZz4NLsINvxplTuSCd-22de3g/exec";
-let activeTab = SLA_TYPES[0];
-let allRecords = [];
+// ============================================================
+// SET THIS AFTER DEPLOYING DashboardListAPI.gs AS A WEB APP
+// ============================================================
+var API_URL = 'YAHAN_APNA_DASHBOARD_LIST_API_EXEC_URL_DAALO';
 
-function loadSavedUrl(){
-  const u = localStorage.getItem(URL_KEY) || DEFAULT_API_URL;
-  if(u) document.getElementById('apiUrl').value = u;
-  return u;
+// Fallback list — works even before the API is set up.
+// Once API_URL is configured, "Add dashboard" will sync across devices instead.
+var DEFAULT_DASHBOARDS = [
+  { name: 'Return Dashboard', url: 'https://pardeep9393.github.io/Return-dashboard/' },
+  { name: 'Packing Material Dashboard', url: 'https://pardeep9393.github.io/Packing-Material-DashBoard/' },
+  { name: 'Inward All Summary', url: 'https://pardeep9393.github.io/Inward-All-summary/' },
+  { name: 'Escalation Summary', url: 'https://pardeep9393.github.io/Escalation-Summary/' },
+  { name: 'July Offroll Data', url: 'https://pardeep9393.github.io/July_DASHBOARD_OFFROLL_DATA/' },
+  { name: 'SLA Performance Dashboard', url: 'https://pardeep9393.github.io/SLA-Perfomance-Check/' }
+];
+
+var apiReady = API_URL.indexOf('YAHAN_APNA') !== 0;
+var currentList = [];
+
+function slugify(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 }
 
-function saveAndFetch(){
-  const url = document.getElementById('apiUrl').value.trim();
-  if(!url){ setStatus('URL daalo pehle.', 'err'); return; }
-  localStorage.setItem(URL_KEY, url);
-  fetchData();
+async function loadDashboards() {
+  var main = document.getElementById('main');
+  var nav = document.getElementById('nav');
+  main.innerHTML = '<p class="load-msg">Loading dashboard list...</p>';
+  nav.innerHTML = '';
+
+  if (!apiReady) {
+    currentList = DEFAULT_DASHBOARDS;
+  } else {
+    try {
+      var res = await fetch(API_URL);
+      var data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Failed to load list');
+      currentList = data.dashboards || [];
+      if (currentList.length === 0) currentList = DEFAULT_DASHBOARDS;
+    } catch (e) {
+      currentList = DEFAULT_DASHBOARDS;
+    }
+  }
+
+  if (currentList.length === 0) {
+    main.innerHTML = '<p class="empty-msg">No dashboards added yet. Click "+ Add dashboard" to add your first one.</p>';
+    return;
+  }
+
+  main.innerHTML = '';
+  currentList.forEach(function(d, idx) {
+    var id = slugify(d.name);
+
+    var navLink = document.createElement('a');
+    navLink.href = 'javascript:void(0)';
+    navLink.innerText = d.name;
+    navLink.onclick = function() { showTab(id); };
+    if (idx === 0) navLink.className = 'active';
+    navLink.setAttribute('data-tab', id);
+    nav.appendChild(navLink);
+
+    var section = document.createElement('div');
+    section.className = 'section';
+    section.id = id;
+    section.style.display = idx === 0 ? 'block' : 'none';
+
+    var head = document.createElement('div');
+    head.className = 'section-head';
+
+    var h2 = document.createElement('h2');
+    h2.innerText = d.name;
+    head.appendChild(h2);
+
+    var actions = document.createElement('div');
+    actions.className = 'section-actions';
+
+    var openLink = document.createElement('a');
+    openLink.href = d.url;
+    openLink.target = '_blank';
+    openLink.rel = 'noopener';
+    openLink.innerText = 'Open full page ↗';
+    actions.appendChild(openLink);
+
+    var removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-btn';
+    removeBtn.innerText = 'Remove';
+    removeBtn.onclick = function() { removeDashboard(d.name, d.url); };
+    actions.appendChild(removeBtn);
+
+    head.appendChild(actions);
+    section.appendChild(head);
+
+    var frameWrap = document.createElement('div');
+    frameWrap.className = 'frame-wrap';
+
+    var iframe = document.createElement('iframe');
+    iframe.src = d.url;
+    iframe.loading = 'lazy';
+    frameWrap.appendChild(iframe);
+
+    section.appendChild(frameWrap);
+    main.appendChild(section);
+  });
 }
 
-function setStatus(msg, cls){
-  const el = document.getElementById('fetchStatus');
-  el.textContent = msg;
-  el.className = 'status-line ' + (cls||'');
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(function(s) {
+    s.style.display = s.id === id ? 'block' : 'none';
+  });
+  document.querySelectorAll('.nav a').forEach(function(a) {
+    a.classList.toggle('active', a.getAttribute('data-tab') === id);
+  });
 }
 
-async function fetchData(){
-  const url = document.getElementById('apiUrl').value.trim() || loadSavedUrl();
-  if(!url){ setStatus('Web App URL abhi tak set nahi hai.', 'err'); return; }
-  setStatus('Fetching...', '');
-  try{
-    const res = await fetch(url);
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    allRecords = (json.records || []).map(r => ({
-      wh: r.WH || 'Unspecified',
-      client: r.Client || 'Unspecified',
-      type: r.Section,
-      date: normalizeDateForFilter(r.Date),
-      metric: r.Metric,
-      value: r.Value,
-      mailDate: r.MailDate
-    })).filter(r => SLA_TYPES.includes(r.type));
-    setStatus(`Loaded ${allRecords.length} records. Last updated: ${new Date(json.updatedAt).toLocaleString()}`, 'ok');
-    renderAll();
-  }catch(err){
-    setStatus('Fetch fail: ' + err.message + ' — URL ya deployment access check karo.', 'err');
+function openModal() {
+  document.getElementById('modalName').value = '';
+  document.getElementById('modalUrl').value = '';
+  document.getElementById('modalError').style.display = 'none';
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+async function submitAdd() {
+  var name = document.getElementById('modalName').value.trim();
+  var url = document.getElementById('modalUrl').value.trim();
+  var errEl = document.getElementById('modalError');
+  errEl.style.display = 'none';
+
+  if (!apiReady) {
+    errEl.innerText = 'API_URL abhi set nahi hai — is naye link ko sirf isi device pe temp dekhne ke liye maano. Sabke liye permanent add karne ke liye pehle DashboardListAPI.gs deploy karo.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (!name || !url) {
+    errEl.innerText = 'Name aur URL dono bharo';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!/^https?:\/\//.test(url)) {
+    errEl.innerText = 'URL http:// ya https:// se shuru hona chahiye';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  try {
+    var res = await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'add', name: name, url: url })
+    });
+    var data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Add failed');
+    closeModal();
+    loadDashboards();
+  } catch (e) {
+    errEl.innerText = e.message;
+    errEl.style.display = 'block';
   }
 }
 
-function normalizeDateForFilter(d){
-  if(!d) return '';
-  const s = String(d);
-  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  return m ? m[0] : s;
-}
-
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function formatDisplayDate(iso){
-  const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})/);
-  return m ? `${m[3]}/${m[2]}/${m[1]}` : iso;
-}
-
-function valueBadgeClass(value){
-  const m = String(value).match(/(\d+(\.\d+)?)\s*%/);
-  if(!m) return 'plain';
-  const v = parseFloat(m[1]);
-  if(v >= 95) return 'good';
-  if(v >= 90) return 'warn';
-  return 'bad';
-}
-
-function populateFilterOptions(){
-  const whSel = document.getElementById('whFilter');
-  const clientSel = document.getElementById('clientFilter');
-  const curWh = whSel.value, curClient = clientSel.value;
-
-  const whs = [...new Set(allRecords.map(r=>r.wh).filter(Boolean))].sort();
-  const clients = [...new Set(allRecords.map(r=>r.client).filter(Boolean))].sort();
-
-  whSel.innerHTML = '<option value="">All Warehouses</option>' + whs.map(w=>`<option value="${escapeHtml(w)}">${escapeHtml(w)}</option>`).join('');
-  clientSel.innerHTML = '<option value="">All Clients</option>' + clients.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-
-  whSel.value = whs.includes(curWh) ? curWh : '';
-  clientSel.value = clients.includes(curClient) ? curClient : '';
-}
-
-function filteredRecords(){
-  const wh = document.getElementById('whFilter').value;
-  const client = document.getElementById('clientFilter').value;
-  const from = document.getElementById('fromDate').value;
-  const to = document.getElementById('toDate').value;
-
-  return allRecords.filter(r=>{
-    if(wh && r.wh !== wh) return false;
-    if(client && r.client !== client) return false;
-    if(from && r.date < from) return false;
-    if(to && r.date > to) return false;
-    return true;
-  });
-}
-
-function clearFilters(){
-  document.getElementById('whFilter').value = '';
-  document.getElementById('clientFilter').value = '';
-  document.getElementById('fromDate').value = '';
-  document.getElementById('toDate').value = '';
-  renderAll();
-}
-
-function renderTabs(){
-  const bar = document.getElementById('tabBar');
-  bar.innerHTML = SLA_TYPES.map(t=>
-    `<div class="tab ${t===activeTab?'active':''}" onclick="setActiveTab('${t}')">${t}</div>`
-  ).join('');
-}
-function setActiveTab(t){ activeTab = t; renderAll(); }
-
-// Pivot long-format records (wh, client, date, metric, value) into a wide table per section
-function renderSections(){
-  const holder = document.getElementById('sectionsHolder');
-  const all = filteredRecords();
-  populateFilterOptions();
-
-  holder.innerHTML = SLA_TYPES.map(type=>{
-    const recs = all.filter(r=>r.type===type);
-    const metrics = [...new Set(recs.map(r=>r.metric).filter(Boolean))];
-
-    const groupKey = r => r.wh+'||'+r.client+'||'+r.date;
-    const groups = {};
-    recs.forEach(r=>{
-      const k = groupKey(r);
-      if(!groups[k]) groups[k] = { wh:r.wh, client:r.client, date:r.date, values:{} };
-      groups[k].values[r.metric] = r.value;
+async function removeDashboard(name, url) {
+  if (!confirm('"' + name + '" ko list se hatana hai?')) return;
+  try {
+    var res = await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'remove', name: name, url: url })
     });
-    const rowsArr = Object.values(groups).sort((a,b)=>
-      a.date===b.date ? (a.client.localeCompare(b.client) || a.wh.localeCompare(b.wh)) : a.date.localeCompare(b.date));
-
-    const headCols = metrics.map(m=>`<th>${escapeHtml(m)}</th>`).join('');
-    const bodyRows = rowsArr.map(g=>{
-      const cells = metrics.map(m=>{
-        const v = g.values[m];
-        if(v === undefined || v === '') return '<td>—</td>';
-        return `<td><span class="badge ${valueBadgeClass(v)}">${escapeHtml(v)}</span></td>`;
-      }).join('');
-      return `<tr><td>${escapeHtml(g.client)}</td><td>${escapeHtml(g.wh)}</td><td>${formatDisplayDate(g.date)}</td>${cells}</tr>`;
-    }).join('');
-
-    return `
-    <div class="section ${type===activeTab?'active':''}">
-      <div class="section-head">
-        <h2>${type}</h2>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <span class="stat-chip">${rowsArr.length} date rows</span>
-          <button class="btn btn-outline btn-sm" onclick="exportCsv('${type}')">Export CSV</button>
-        </div>
-      </div>
-      ${rowsArr.length ? `
-      <table>
-        <thead><tr><th>Client</th><th>WH</th><th>Date</th>${headCols}</tr></thead>
-        <tbody>${bodyRows}</tbody>
-      </table>` : `<div class="empty">Is section ke liye abhi koi data nahi mila. Fetch karo ya filters check karo.</div>`}
-    </div>`;
-  }).join('');
+    var data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Remove failed');
+    loadDashboards();
+  } catch (e) {
+    alert('Error: ' + e.message);
+  }
 }
 
-function exportCsv(type){
-  const all = filteredRecords().filter(r=>r.type===type);
-  if(!all.length){ alert('Export ke liye is section me koi data nahi hai.'); return; }
-  const metrics = [...new Set(all.map(r=>r.metric).filter(Boolean))];
-  const groups = {};
-  all.forEach(r=>{
-    const k = r.wh+'||'+r.client+'||'+r.date;
-    if(!groups[k]) groups[k] = { wh:r.wh, client:r.client, date:r.date, values:{} };
-    groups[k].values[r.metric] = r.value;
-  });
-  let csv = 'Client,WH,Date,' + metrics.map(m=>`"${m.replace(/"/g,'""')}"`).join(',') + '\n';
-  Object.values(groups).forEach(g=>{
-    csv += `${g.client},${g.wh},${formatDisplayDate(g.date)},` + metrics.map(m=>g.values[m]||'').join(',') + '\n';
-  });
-  const blob = new Blob([csv], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `${type.replace(/\s+/g,'_')}_export.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function attachFilterListeners(){
-  ['whFilter','clientFilter','fromDate','toDate'].forEach(id=>{
-    document.getElementById(id).addEventListener('change', renderAll);
-  });
-}
-
-function renderAll(){
-  renderTabs();
-  renderSections();
-}
-
-loadSavedUrl();
-attachFilterListeners();
-renderAll();
-if(loadSavedUrl()) fetchData();
-setInterval(fetchData, 5*60*1000);
+loadDashboards();
 </script>
 </body>
 </html>
