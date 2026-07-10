@@ -134,11 +134,12 @@
 <script>
 const SLA_TYPES = ["Inward SLA","Return SLA","Order Process SLA","Escalation SLA"];
 const URL_KEY = "emiza_sla_api_url";
+const DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbyeuyOfVe4zxo00qZasHvfKTy2hCzsD-q699Lr8KM99bzZz4NLsINvxplTuSCd-22de3g/exec";
 let activeTab = SLA_TYPES[0];
 let allRecords = [];
 
 function loadSavedUrl(){
-  const u = localStorage.getItem(URL_KEY);
+  const u = localStorage.getItem(URL_KEY) || DEFAULT_API_URL;
   if(u) document.getElementById('apiUrl').value = u;
   return u;
 }
