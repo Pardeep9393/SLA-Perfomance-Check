@@ -187,26 +187,35 @@ async function fetchData(){
       value: r.Value,
       mailDate: r.MailDate
     })).filter(r => SLA_TYPES.includes(r.type));
-    allRecords = dedupeLatestByMail(mapped);
-    setStatus(`Loaded ${allRecords.length} records (latest mail per cell). Last updated: ${new Date(json.updatedAt).toLocaleString()}`, 'ok');
+    allRecords = dedupeByCell(keepOnlyLatestMailPerSection(mapped));
+    setStatus(`Loaded ${allRecords.length} records from the latest mail per section. Last updated: ${new Date(json.updatedAt).toLocaleString()}`, 'ok');
     renderAll();
   }catch(err){
     setStatus('Fetch fail: ' + err.message + ' — URL ya deployment access check karo.', 'err');
   }
 }
 
-// Keep only the latest-mail value for every (wh, client, type, date, metric) combo,
-// so stale/older mail data never overrides or duplicates the most recent mail's numbers.
-function dedupeLatestByMail(records){
+// Only keep records from each section's single most-recent mail.
+// Anything from an older mail for that section is dropped completely —
+// the dashboard should mirror exactly what's in the latest mail, nothing more.
+function keepOnlyLatestMailPerSection(records){
+  const maxMailTimeByType = {};
+  records.forEach(r=>{
+    const t = Date.parse(r.mailDate) || 0;
+    if(!(r.type in maxMailTimeByType) || t > maxMailTimeByType[r.type]){
+      maxMailTimeByType[r.type] = t;
+    }
+  });
+  return records.filter(r => (Date.parse(r.mailDate) || 0) === maxMailTimeByType[r.type]);
+}
+
+// Safety net: if the latest mail itself contains duplicate rows for the exact
+// same (wh, client, type, date, metric), keep only the last one.
+function dedupeByCell(records){
   const map = new Map();
   records.forEach(r=>{
     const key = [r.wh, r.client, r.type, r.date, r.metric].join('||');
-    const existing = map.get(key);
-    const rTime = Date.parse(r.mailDate) || 0;
-    const eTime = existing ? (Date.parse(existing.mailDate) || 0) : -Infinity;
-    if(!existing || rTime >= eTime){
-      map.set(key, r);
-    }
+    map.set(key, r);
   });
   return [...map.values()];
 }
