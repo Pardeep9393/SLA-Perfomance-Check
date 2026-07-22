@@ -188,25 +188,29 @@ async function fetchData(){
       mailDate: r.MailDate
     })).filter(r => SLA_TYPES.includes(r.type));
     allRecords = dedupeByCell(keepOnlyLatestMailPerSection(mapped));
-    setStatus(`Loaded ${allRecords.length} records from the latest mail per section. Last updated: ${new Date(json.updatedAt).toLocaleString()}`, 'ok');
+    setStatus(`Loaded ${allRecords.length} records from the latest mail per client per section. Last updated: ${new Date(json.updatedAt).toLocaleString()}`, 'ok');
     renderAll();
   }catch(err){
     setStatus('Fetch fail: ' + err.message + ' — URL ya deployment access check karo.', 'err');
   }
 }
 
-// Only keep records from each section's single most-recent mail.
-// Anything from an older mail for that section is dropped completely —
-// the dashboard should mirror exactly what's in the latest mail, nothing more.
+// Only keep records from each (client + section)'s single most-recent mail.
+// Anything from an older mail for that client's section is dropped completely —
+// the dashboard should mirror exactly what's in each client's latest mail, nothing more.
+// Keyed by client+type (not type alone), so one client's newer mail never wipes
+// out another client's data for the same section.
 function keepOnlyLatestMailPerSection(records){
-  const maxMailTimeByType = {};
+  const maxMailTimeByKey = {};
+  const keyOf = r => r.client + '||' + r.type;
   records.forEach(r=>{
+    const k = keyOf(r);
     const t = Date.parse(r.mailDate) || 0;
-    if(!(r.type in maxMailTimeByType) || t > maxMailTimeByType[r.type]){
-      maxMailTimeByType[r.type] = t;
+    if(!(k in maxMailTimeByKey) || t > maxMailTimeByKey[k]){
+      maxMailTimeByKey[k] = t;
     }
   });
-  return records.filter(r => (Date.parse(r.mailDate) || 0) === maxMailTimeByType[r.type]);
+  return records.filter(r => (Date.parse(r.mailDate) || 0) === maxMailTimeByKey[keyOf(r)]);
 }
 
 // Safety net: if the latest mail itself contains duplicate rows for the exact
